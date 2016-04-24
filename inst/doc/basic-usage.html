@@ -1,0 +1,317 @@
+<!DOCTYPE html>
+
+<html xmlns="http://www.w3.org/1999/xhtml">
+
+<head>
+
+<meta charset="utf-8">
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+<meta name="generator" content="pandoc" />
+
+<meta name="author" content="Alexej Gossmann" />
+
+<meta name="date" content="2016-04-24" />
+
+<title>Basic usage of grpSLOPE</title>
+
+
+
+<style type="text/css">code{white-space: pre;}</style>
+<style type="text/css">
+div.sourceCode { overflow-x: auto; }
+table.sourceCode, tr.sourceCode, td.lineNumbers, td.sourceCode {
+  margin: 0; padding: 0; vertical-align: baseline; border: none; }
+table.sourceCode { width: 100%; line-height: 100%; }
+td.lineNumbers { text-align: right; padding-right: 4px; padding-left: 4px; color: #aaaaaa; border-right: 1px solid #aaaaaa; }
+td.sourceCode { padding-left: 5px; }
+code > span.kw { color: #007020; font-weight: bold; } /* Keyword */
+code > span.dt { color: #902000; } /* DataType */
+code > span.dv { color: #40a070; } /* DecVal */
+code > span.bn { color: #40a070; } /* BaseN */
+code > span.fl { color: #40a070; } /* Float */
+code > span.ch { color: #4070a0; } /* Char */
+code > span.st { color: #4070a0; } /* String */
+code > span.co { color: #60a0b0; font-style: italic; } /* Comment */
+code > span.ot { color: #007020; } /* Other */
+code > span.al { color: #ff0000; font-weight: bold; } /* Alert */
+code > span.fu { color: #06287e; } /* Function */
+code > span.er { color: #ff0000; font-weight: bold; } /* Error */
+code > span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warning */
+code > span.cn { color: #880000; } /* Constant */
+code > span.sc { color: #4070a0; } /* SpecialChar */
+code > span.vs { color: #4070a0; } /* VerbatimString */
+code > span.ss { color: #bb6688; } /* SpecialString */
+code > span.im { } /* Import */
+code > span.va { color: #19177c; } /* Variable */
+code > span.cf { color: #007020; font-weight: bold; } /* ControlFlow */
+code > span.op { color: #666666; } /* Operator */
+code > span.bu { } /* BuiltIn */
+code > span.ex { } /* Extension */
+code > span.pp { color: #bc7a00; } /* Preprocessor */
+code > span.at { color: #7d9029; } /* Attribute */
+code > span.do { color: #ba2121; font-style: italic; } /* Documentation */
+code > span.an { color: #60a0b0; font-weight: bold; font-style: italic; } /* Annotation */
+code > span.cv { color: #60a0b0; font-weight: bold; font-style: italic; } /* CommentVar */
+code > span.in { color: #60a0b0; font-weight: bold; font-style: italic; } /* Information */
+</style>
+<style type="text/css">
+  pre:not([class]) {
+    background-color: white;
+  }
+</style>
+
+
+<link href="data:text/css;charset=utf-8,body%20%7B%0Abackground%2Dcolor%3A%20%23fff%3B%0Amargin%3A%201em%20auto%3B%0Amax%2Dwidth%3A%20700px%3B%0Aoverflow%3A%20visible%3B%0Apadding%2Dleft%3A%202em%3B%0Apadding%2Dright%3A%202em%3B%0Afont%2Dfamily%3A%20%22Open%20Sans%22%2C%20%22Helvetica%20Neue%22%2C%20Helvetica%2C%20Arial%2C%20sans%2Dserif%3B%0Afont%2Dsize%3A%2014px%3B%0Aline%2Dheight%3A%201%2E35%3B%0A%7D%0A%23header%20%7B%0Atext%2Dalign%3A%20center%3B%0A%7D%0A%23TOC%20%7B%0Aclear%3A%20both%3B%0Amargin%3A%200%200%2010px%2010px%3B%0Apadding%3A%204px%3B%0Awidth%3A%20400px%3B%0Aborder%3A%201px%20solid%20%23CCCCCC%3B%0Aborder%2Dradius%3A%205px%3B%0Abackground%2Dcolor%3A%20%23f6f6f6%3B%0Afont%2Dsize%3A%2013px%3B%0Aline%2Dheight%3A%201%2E3%3B%0A%7D%0A%23TOC%20%2Etoctitle%20%7B%0Afont%2Dweight%3A%20bold%3B%0Afont%2Dsize%3A%2015px%3B%0Amargin%2Dleft%3A%205px%3B%0A%7D%0A%23TOC%20ul%20%7B%0Apadding%2Dleft%3A%2040px%3B%0Amargin%2Dleft%3A%20%2D1%2E5em%3B%0Amargin%2Dtop%3A%205px%3B%0Amargin%2Dbottom%3A%205px%3B%0A%7D%0A%23TOC%20ul%20ul%20%7B%0Amargin%2Dleft%3A%20%2D2em%3B%0A%7D%0A%23TOC%20li%20%7B%0Aline%2Dheight%3A%2016px%3B%0A%7D%0Atable%20%7B%0Amargin%3A%201em%20auto%3B%0Aborder%2Dwidth%3A%201px%3B%0Aborder%2Dcolor%3A%20%23DDDDDD%3B%0Aborder%2Dstyle%3A%20outset%3B%0Aborder%2Dcollapse%3A%20collapse%3B%0A%7D%0Atable%20th%20%7B%0Aborder%2Dwidth%3A%202px%3B%0Apadding%3A%205px%3B%0Aborder%2Dstyle%3A%20inset%3B%0A%7D%0Atable%20td%20%7B%0Aborder%2Dwidth%3A%201px%3B%0Aborder%2Dstyle%3A%20inset%3B%0Aline%2Dheight%3A%2018px%3B%0Apadding%3A%205px%205px%3B%0A%7D%0Atable%2C%20table%20th%2C%20table%20td%20%7B%0Aborder%2Dleft%2Dstyle%3A%20none%3B%0Aborder%2Dright%2Dstyle%3A%20none%3B%0A%7D%0Atable%20thead%2C%20table%20tr%2Eeven%20%7B%0Abackground%2Dcolor%3A%20%23f7f7f7%3B%0A%7D%0Ap%20%7B%0Amargin%3A%200%2E5em%200%3B%0A%7D%0Ablockquote%20%7B%0Abackground%2Dcolor%3A%20%23f6f6f6%3B%0Apadding%3A%200%2E25em%200%2E75em%3B%0A%7D%0Ahr%20%7B%0Aborder%2Dstyle%3A%20solid%3B%0Aborder%3A%20none%3B%0Aborder%2Dtop%3A%201px%20solid%20%23777%3B%0Amargin%3A%2028px%200%3B%0A%7D%0Adl%20%7B%0Amargin%2Dleft%3A%200%3B%0A%7D%0Adl%20dd%20%7B%0Amargin%2Dbottom%3A%2013px%3B%0Amargin%2Dleft%3A%2013px%3B%0A%7D%0Adl%20dt%20%7B%0Afont%2Dweight%3A%20bold%3B%0A%7D%0Aul%20%7B%0Amargin%2Dtop%3A%200%3B%0A%7D%0Aul%20li%20%7B%0Alist%2Dstyle%3A%20circle%20outside%3B%0A%7D%0Aul%20ul%20%7B%0Amargin%2Dbottom%3A%200%3B%0A%7D%0Apre%2C%20code%20%7B%0Abackground%2Dcolor%3A%20%23f7f7f7%3B%0Aborder%2Dradius%3A%203px%3B%0Acolor%3A%20%23333%3B%0A%7D%0Apre%20%7B%0Awhite%2Dspace%3A%20pre%2Dwrap%3B%20%0Aborder%2Dradius%3A%203px%3B%0Amargin%3A%205px%200px%2010px%200px%3B%0Apadding%3A%2010px%3B%0A%7D%0Apre%3Anot%28%5Bclass%5D%29%20%7B%0Abackground%2Dcolor%3A%20%23f7f7f7%3B%0A%7D%0Acode%20%7B%0Afont%2Dfamily%3A%20Consolas%2C%20Monaco%2C%20%27Courier%20New%27%2C%20monospace%3B%0Afont%2Dsize%3A%2085%25%3B%0A%7D%0Ap%20%3E%20code%2C%20li%20%3E%20code%20%7B%0Apadding%3A%202px%200px%3B%0A%7D%0Adiv%2Efigure%20%7B%0Atext%2Dalign%3A%20center%3B%0A%7D%0Aimg%20%7B%0Abackground%2Dcolor%3A%20%23FFFFFF%3B%0Apadding%3A%202px%3B%0Aborder%3A%201px%20solid%20%23DDDDDD%3B%0Aborder%2Dradius%3A%203px%3B%0Aborder%3A%201px%20solid%20%23CCCCCC%3B%0Amargin%3A%200%205px%3B%0A%7D%0Ah1%20%7B%0Amargin%2Dtop%3A%200%3B%0Afont%2Dsize%3A%2035px%3B%0Aline%2Dheight%3A%2040px%3B%0A%7D%0Ah2%20%7B%0Aborder%2Dbottom%3A%204px%20solid%20%23f7f7f7%3B%0Apadding%2Dtop%3A%2010px%3B%0Apadding%2Dbottom%3A%202px%3B%0Afont%2Dsize%3A%20145%25%3B%0A%7D%0Ah3%20%7B%0Aborder%2Dbottom%3A%202px%20solid%20%23f7f7f7%3B%0Apadding%2Dtop%3A%2010px%3B%0Afont%2Dsize%3A%20120%25%3B%0A%7D%0Ah4%20%7B%0Aborder%2Dbottom%3A%201px%20solid%20%23f7f7f7%3B%0Amargin%2Dleft%3A%208px%3B%0Afont%2Dsize%3A%20105%25%3B%0A%7D%0Ah5%2C%20h6%20%7B%0Aborder%2Dbottom%3A%201px%20solid%20%23ccc%3B%0Afont%2Dsize%3A%20105%25%3B%0A%7D%0Aa%20%7B%0Acolor%3A%20%230033dd%3B%0Atext%2Ddecoration%3A%20none%3B%0A%7D%0Aa%3Ahover%20%7B%0Acolor%3A%20%236666ff%3B%20%7D%0Aa%3Avisited%20%7B%0Acolor%3A%20%23800080%3B%20%7D%0Aa%3Avisited%3Ahover%20%7B%0Acolor%3A%20%23BB00BB%3B%20%7D%0Aa%5Bhref%5E%3D%22http%3A%22%5D%20%7B%0Atext%2Ddecoration%3A%20underline%3B%20%7D%0Aa%5Bhref%5E%3D%22https%3A%22%5D%20%7B%0Atext%2Ddecoration%3A%20underline%3B%20%7D%0A%0Acode%20%3E%20span%2Ekw%20%7B%20color%3A%20%23555%3B%20font%2Dweight%3A%20bold%3B%20%7D%20%0Acode%20%3E%20span%2Edt%20%7B%20color%3A%20%23902000%3B%20%7D%20%0Acode%20%3E%20span%2Edv%20%7B%20color%3A%20%2340a070%3B%20%7D%20%0Acode%20%3E%20span%2Ebn%20%7B%20color%3A%20%23d14%3B%20%7D%20%0Acode%20%3E%20span%2Efl%20%7B%20color%3A%20%23d14%3B%20%7D%20%0Acode%20%3E%20span%2Ech%20%7B%20color%3A%20%23d14%3B%20%7D%20%0Acode%20%3E%20span%2Est%20%7B%20color%3A%20%23d14%3B%20%7D%20%0Acode%20%3E%20span%2Eco%20%7B%20color%3A%20%23888888%3B%20font%2Dstyle%3A%20italic%3B%20%7D%20%0Acode%20%3E%20span%2Eot%20%7B%20color%3A%20%23007020%3B%20%7D%20%0Acode%20%3E%20span%2Eal%20%7B%20color%3A%20%23ff0000%3B%20font%2Dweight%3A%20bold%3B%20%7D%20%0Acode%20%3E%20span%2Efu%20%7B%20color%3A%20%23900%3B%20font%2Dweight%3A%20bold%3B%20%7D%20%20code%20%3E%20span%2Eer%20%7B%20color%3A%20%23a61717%3B%20background%2Dcolor%3A%20%23e3d2d2%3B%20%7D%20%0A" rel="stylesheet" type="text/css" />
+
+</head>
+
+<body>
+
+
+
+<div id="header">
+<h1 class="title">Basic usage of grpSLOPE</h1>
+<h4 class="author"><em>Alexej Gossmann</em></h4>
+<h4 class="date"><em>2016-04-24</em></h4>
+</div>
+
+
+<div id="introduction" class="section level2">
+<h2>Introduction</h2>
+<p>Group SLOPE is a penalized linear regression method that is used for adaptive selection of groups of significant predictors in a high-dimensional linear model. It was introduced in <a href="http://arxiv.org/abs/1511.09078">Brzyski et. al. (2015) <em>Group SLOPE &amp;mdash; adaptive selection of groups of predictors</em></a> and <a href="http://dx.doi.org/10.1145/2808719.2808743">Gossmann et. al. (2015) <em>Identification of Significant Genetic Variants via SLOPE, and Its Extension to Group SLOPE</em></a>. A unique property of the Group SLOPE method is that it offers (group) false discovery rate control (i.e., control of the expected proportion of irrelevant groups among the total number of groups selected by the Group SLOPE method).</p>
+</div>
+<div id="data-generation" class="section level2">
+<h2>Data generation</h2>
+<p>We simulate a SNP-data-like model matrix.</p>
+<p><strong>Note:</strong> In fact, the Group SLOPE method is designed to work with a data matrix, where the columns corresponding to different groups of predictors are nearly uncorrelated. Only for the brevity of exposition we do not check for or enforce low between group correlations in this example.</p>
+<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="kw">set.seed</span>(<span class="dv">1</span>)
+
+p     &lt;-<span class="st"> </span><span class="dv">500</span>
+probs &lt;-<span class="st"> </span><span class="kw">runif</span>(p, <span class="fl">0.1</span>, <span class="fl">0.5</span>)
+probs &lt;-<span class="st"> </span><span class="kw">t</span>(probs) %x%<span class="st"> </span><span class="kw">matrix</span>(<span class="dv">1</span>,p,<span class="dv">2</span>)
+X0    &lt;-<span class="st"> </span><span class="kw">matrix</span>(<span class="kw">rbinom</span>(<span class="dv">2</span>*p*p, <span class="dv">1</span>, probs), p, <span class="dv">2</span>*p)
+X     &lt;-<span class="st"> </span>X0 %*%<span class="st"> </span>(<span class="kw">diag</span>(p) %x%<span class="st"> </span><span class="kw">matrix</span>(<span class="dv">1</span>,<span class="dv">2</span>,<span class="dv">1</span>))</code></pre></div>
+<p>Upper left <span class="math inline">\(10 \times 10\)</span> corner of <span class="math inline">\(X\)</span>:</p>
+<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r">pander::<span class="kw">pandoc.table</span>(X[<span class="dv">1</span>:<span class="dv">10</span>, <span class="dv">1</span>:<span class="dv">10</span>])</code></pre></div>
+<table style="width:28%;">
+<colgroup>
+<col width="2%"></col>
+<col width="2%"></col>
+<col width="2%"></col>
+<col width="2%"></col>
+<col width="2%"></col>
+<col width="2%"></col>
+<col width="2%"></col>
+<col width="2%"></col>
+<col width="2%"></col>
+<col width="2%"></col>
+</colgroup>
+<tbody>
+<tr class="odd">
+<td align="left">0</td>
+<td align="left">1</td>
+<td align="left">1</td>
+<td align="left">1</td>
+<td align="left">1</td>
+<td align="left">2</td>
+<td align="left">2</td>
+<td align="left">0</td>
+<td align="left">2</td>
+<td align="left">1</td>
+</tr>
+<tr class="even">
+<td align="left">0</td>
+<td align="left">2</td>
+<td align="left">0</td>
+<td align="left">1</td>
+<td align="left">0</td>
+<td align="left">2</td>
+<td align="left">0</td>
+<td align="left">1</td>
+<td align="left">1</td>
+<td align="left">1</td>
+</tr>
+<tr class="odd">
+<td align="left">0</td>
+<td align="left">1</td>
+<td align="left">1</td>
+<td align="left">0</td>
+<td align="left">0</td>
+<td align="left">2</td>
+<td align="left">2</td>
+<td align="left">1</td>
+<td align="left">0</td>
+<td align="left">0</td>
+</tr>
+<tr class="even">
+<td align="left">1</td>
+<td align="left">0</td>
+<td align="left">0</td>
+<td align="left">1</td>
+<td align="left">1</td>
+<td align="left">1</td>
+<td align="left">1</td>
+<td align="left">0</td>
+<td align="left">0</td>
+<td align="left">0</td>
+</tr>
+<tr class="odd">
+<td align="left">0</td>
+<td align="left">0</td>
+<td align="left">2</td>
+<td align="left">1</td>
+<td align="left">0</td>
+<td align="left">1</td>
+<td align="left">0</td>
+<td align="left">2</td>
+<td align="left">1</td>
+<td align="left">0</td>
+</tr>
+<tr class="even">
+<td align="left">1</td>
+<td align="left">0</td>
+<td align="left">1</td>
+<td align="left">1</td>
+<td align="left">0</td>
+<td align="left">0</td>
+<td align="left">2</td>
+<td align="left">1</td>
+<td align="left">2</td>
+<td align="left">0</td>
+</tr>
+<tr class="odd">
+<td align="left">0</td>
+<td align="left">0</td>
+<td align="left">1</td>
+<td align="left">1</td>
+<td align="left">1</td>
+<td align="left">1</td>
+<td align="left">1</td>
+<td align="left">1</td>
+<td align="left">1</td>
+<td align="left">2</td>
+</tr>
+<tr class="even">
+<td align="left">1</td>
+<td align="left">0</td>
+<td align="left">0</td>
+<td align="left">1</td>
+<td align="left">0</td>
+<td align="left">0</td>
+<td align="left">1</td>
+<td align="left">0</td>
+<td align="left">2</td>
+<td align="left">1</td>
+</tr>
+<tr class="odd">
+<td align="left">1</td>
+<td align="left">0</td>
+<td align="left">1</td>
+<td align="left">1</td>
+<td align="left">0</td>
+<td align="left">1</td>
+<td align="left">2</td>
+<td align="left">0</td>
+<td align="left">0</td>
+<td align="left">0</td>
+</tr>
+<tr class="even">
+<td align="left">0</td>
+<td align="left">0</td>
+<td align="left">1</td>
+<td align="left">1</td>
+<td align="left">1</td>
+<td align="left">2</td>
+<td align="left">1</td>
+<td align="left">0</td>
+<td align="left">0</td>
+<td align="left">0</td>
+</tr>
+</tbody>
+</table>
+<p>We divide the predictors into 100 groups of sizes ranging from 3 to 7.</p>
+<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r">group &lt;-<span class="st"> </span><span class="kw">c</span>(<span class="kw">rep</span>(<span class="dv">1</span>:<span class="dv">20</span>, <span class="dt">each=</span><span class="dv">3</span>),
+           <span class="kw">rep</span>(<span class="dv">21</span>:<span class="dv">40</span>, <span class="dt">each=</span><span class="dv">4</span>),
+           <span class="kw">rep</span>(<span class="dv">41</span>:<span class="dv">60</span>, <span class="dt">each=</span><span class="dv">5</span>),
+           <span class="kw">rep</span>(<span class="dv">61</span>:<span class="dv">80</span>, <span class="dt">each=</span><span class="dv">6</span>),
+           <span class="kw">rep</span>(<span class="dv">81</span>:<span class="dv">100</span>, <span class="dt">each=</span><span class="dv">7</span>))
+group.id &lt;-<span class="st"> </span>grpSLOPE::<span class="kw">getGroupID</span>(group)
+n.group &lt;-<span class="st"> </span><span class="kw">length</span>(group.id)
+group.length &lt;-<span class="st"> </span><span class="kw">sapply</span>(group.id, <span class="dt">FUN=</span>length)</code></pre></div>
+<p>We randomly select 10 groups to be truly significant.</p>
+<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r">ind.relevant &lt;-<span class="st"> </span><span class="kw">sample</span>(<span class="dv">1</span>:n.group, <span class="dv">10</span>)
+<span class="kw">print</span>(<span class="kw">sort</span>(ind.relevant))</code></pre></div>
+<pre><code>##  [1]  4 19 24 26 28 42 50 55 67 74</code></pre>
+<p>Then we generate the regression coefficient vector and the response vector according to a linear model.</p>
+<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r">b &lt;-<span class="st"> </span><span class="kw">rep</span>(<span class="dv">0</span>, p)
+for (j in ind.relevant) {
+  <span class="co"># generate effect sizes from the Uniform(0,1) distribution</span>
+  b[group.id[[j]]] &lt;-<span class="st"> </span><span class="kw">runif</span>(group.length[j])
+}
+
+<span class="co"># generate the response vector</span>
+y &lt;-<span class="st"> </span>X %*%<span class="st"> </span>b +<span class="st"> </span><span class="kw">rnorm</span>(p)</code></pre></div>
+</div>
+<div id="fitting-the-group-slope-model" class="section level2">
+<h2>Fitting the Group SLOPE model</h2>
+<p>We fit the Group SLOPE model to the simulated data. The function argument <code>fdr</code> signifies the target (group-wise) false discovery rate of the variable selection procedure.</p>
+<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="kw">library</span>(grpSLOPE)
+
+result &lt;-<span class="st"> </span>grpSLOPE::<span class="kw">grpSLOPE</span>(<span class="dt">X=</span>X, <span class="dt">y=</span>y, <span class="dt">group=</span>group, <span class="dt">fdr=</span><span class="fl">0.1</span>)</code></pre></div>
+</div>
+<div id="model-fit-results" class="section level2">
+<h2>Model fit results</h2>
+<p>We can display which groups were selected as significant by the Group SLOPE method.</p>
+<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r">result$selected</code></pre></div>
+<pre><code>##  [1] &quot;4&quot;  &quot;10&quot; &quot;19&quot; &quot;24&quot; &quot;26&quot; &quot;28&quot; &quot;42&quot; &quot;50&quot; &quot;55&quot; &quot;67&quot; &quot;74&quot;</code></pre>
+<p>Similarly, we can look at the estimates of the noise level and the regression coefficients.</p>
+<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="co"># estimated sigma (true sigma is equal to one)</span>
+result$sigma</code></pre></div>
+<pre><code>## [1] 0.9751941</code></pre>
+<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="co"># first 14 entries of b estimate:</span>
+result$beta[<span class="dv">1</span>:<span class="dv">14</span>]</code></pre></div>
+<pre><code>##  [1] 0.000000 0.000000 0.000000 0.000000 0.000000 0.000000 0.000000
+##  [8] 0.000000 0.000000 7.374246 2.030662 1.071715 0.000000 0.000000</code></pre>
+<p>It might also be interesting to plot the first few elements of the regularizing sequence <span class="math inline">\(\lambda\)</span> used by the Group SLOPE method for the given inputs.</p>
+<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="kw">plot</span>(result$lambda[<span class="dv">1</span>:<span class="dv">10</span>], <span class="dt">xlab =</span> <span class="st">&quot;Index&quot;</span>, <span class="dt">ylab =</span> <span class="st">&quot;Lambda&quot;</span>, <span class="dt">type=</span><span class="st">&quot;l&quot;</span>)</code></pre></div>
+<p><img src="data:image/png;base64,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" alt /></p>
+<p>We check the performance of the method by computing the resulting (group) false discovery proportion (gFDP) and power.</p>
+<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r">n.selected    &lt;-<span class="st"> </span><span class="kw">length</span>(result$selected)
+true.relevant &lt;-<span class="st"> </span><span class="kw">names</span>(group.id)[ind.relevant]
+truepos       &lt;-<span class="st"> </span><span class="kw">intersect</span>(result$selected, true.relevant)
+
+n.truepos  &lt;-<span class="st"> </span><span class="kw">length</span>(truepos)
+n.falsepos &lt;-<span class="st"> </span>n.selected -<span class="st"> </span>n.truepos
+
+gFDP &lt;-<span class="st"> </span>n.falsepos /<span class="st"> </span><span class="kw">max</span>(<span class="dv">1</span>, n.selected)
+pow &lt;-<span class="st"> </span>n.truepos /<span class="st"> </span><span class="kw">length</span>(true.relevant)
+
+<span class="kw">print</span>(<span class="kw">paste</span>(<span class="st">&quot;gFDP =&quot;</span>, gFDP))</code></pre></div>
+<p>[1] “gFDP = 0.0909090909090909”</p>
+<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="kw">print</span>(<span class="kw">paste</span>(<span class="st">&quot;Power =&quot;</span>, pow))</code></pre></div>
+<p>[1] “Power = 1”</p>
+<p>We see that the method indeed did not exceed the target gFDR, while maintaining a high power.</p>
+</div>
+<div id="lambda-sequence" class="section level2">
+<h2>Lambda sequence</h2>
+<p>Multiple ways to select the regularizing sequence <span class="math inline">\(\lambda\)</span> are available.</p>
+<p>If a group structure with little correlation between groups can be assumed (i.e., groups in the standardized model matrix are nearly orthogonal), then we suggest to use the sequence <code>chiMean</code>, which is the default.</p>
+<p>When groups of predictors cannot be assumed to be nearly orthogonal then the Monte Carlo based sequences <code>chiMC</code> and <code>gaussianMC</code> might be advantageous. However this will increase the computation time significantly.</p>
+<p>The sequences <code>chiOrthoMean</code> and <code>chiOrthoMax</code> can be used together with the options <code>orthogonalize=FALSE</code> and <code>normalize=FALSE</code>, when the columns of the model matrix are exactly orthogonal to each other.</p>
+<p>Alternatively, any non-increasing sequence of appropriate length can be used. However, we do not suggest to use any other sequences unless you are an expert on the (Group) SLOPE method.</p>
+</div>
+
+
+
+<!-- dynamically load mathjax for compatibility with self-contained -->
+<script>
+  (function () {
+    var script = document.createElement("script");
+    script.type = "text/javascript";
+    script.src  = "https://cdn.mathjax.org/mathjax/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML";
+    document.getElementsByTagName("head")[0].appendChild(script);
+  })();
+</script>
+
+</body>
+</html>
