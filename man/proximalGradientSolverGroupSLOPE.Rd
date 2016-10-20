@@ -6,7 +6,7 @@
 \usage{
 proximalGradientSolverGroupSLOPE(y, A, group, wt, lambda, max.iter = 10000,
   verbose = FALSE, dual.gap.tol = 1e-06, infeas.tol = 1e-06,
-  x.init = vector(), method = "rcpp")
+  x.init = vector(), ...)
 }
 \arguments{
 \item{y}{the response vector}
@@ -30,8 +30,7 @@ contain a group id for each predictor variable.}
 
 \item{x.init}{An optional initial value for the iterative algorithm}
 
-\item{method}{Specifies which implementation of the Sorted L1 norm prox should be used. 
-See \code{\link{proxGroupSortedL1}} for detail.}
+\item{...}{Options passed to \code{\link[SLOPE]{prox_sorted_L1}}}
 }
 \value{
 A list with members:
@@ -75,8 +74,8 @@ result$x
 
 }
 \references{
-D. Brzyski, W. Su, M. Bogdan (2015), \emph{Group SLOPE -- adaptive selection of groups of predictors}, \url{http://arxiv.org/abs/1511.09078}
+D. Brzyski, A. Gossmann, W. Su, and M. Bogdan (2016) \emph{Group SLOPE -- adaptive selection of groups of predictors}, \url{https://arxiv.org/abs/1610.04960}
 
-A. Gossmann, S. Cao, Y.-P. Wang (2015), \emph{Identification of Significant Genetic Variants via SLOPE, and Its Extension to Group SLOPE}, \url{http://dx.doi.org/10.1145/2808719.2808743}
+A. Gossmann, S. Cao, Y.-P. Wang (2015) \emph{Identification of Significant Genetic Variants via SLOPE, and Its Extension to Group SLOPE}, \url{http://dx.doi.org/10.1145/2808719.2808743}
 }
 
