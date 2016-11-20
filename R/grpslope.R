@@ -19,7 +19,7 @@
 ###############################################################################
 
 #' @importFrom SLOPE prox_sorted_L1
-#' @importFrom stats lm pchisq qchisq qnorm rnorm sd uniroot sigma coef predict
+#' @importFrom stats lm pchisq qchisq qnorm rnorm sd uniroot coef predict
 #' @importFrom utils head
 NULL
 #> NULL
@@ -371,6 +371,9 @@ lambdaGroupSLOPE <- function(method, fdr, group, wt, n.obs=NULL)
   n.group     <- length(group.id)
   group.sizes <- sapply(group.id, FUN=length)
 
+  # make sure weights are in the same order as group.id
+  wt <- wt[names(group.id)]
+
   # compute the lambda sequence according to 'method'
   if (method=="max" | method=="mean") {
     lambda <- lambdaChiOrtho(fdr=fdr, n.group=n.group, wt=wt,
@@ -487,6 +490,13 @@ grpSLOPE <- function(X, y, group, fdr, lambda = "corrected", sigma = NULL,
                      verbose = FALSE, orthogonalize = NULL, normalize = TRUE,
                      max.iter=1e4, dual.gap.tol=1e-6, infeas.tol=1e-6,
                      x.init=vector(), ...) {
+
+  # check inputs for NA or NaN
+  if (anyNA(X)) { stop("Some entries of X are NA or NaN!") }
+  if (anyNA(y)) { stop("Some entries of y are NA or NaN!") }
+  if (anyNA(group)) { stop("Some entries of group are NA or NaN!") }
+  
+  # extract some additional info about the inputs
   group.id <- getGroupID(group)
   n.group  <- length(group.id)
   n <- nrow(X)
@@ -494,13 +504,17 @@ grpSLOPE <- function(X, y, group, fdr, lambda = "corrected", sigma = NULL,
   # normalize X and y -------------------------------------------------
   # (save scaling values in order to obtain parameter estimates on the original scale later on)
   if (normalize) {
-    # center X, so that columns have means equal to zero:
+    # (1) center X, so that columns have means equal to zero
     X.mean <- apply(X, 2, mean)
     X <- X - matrix(rep(X.mean, each = n), nrow = n)
-    # scale X, so that columns have norms equal to one:
+    # (2) scale X, so that columns have norms equal to one
     X.scaling <- apply(X, 2, function(col.of.X) { 1 / sqrt(sum(col.of.X^2)) })
+    # check if division by 0 has occured
+    if (!all(is.finite(X.scaling))) { 
+      stop("X cannot be normalized (probably some column has sample variance equal to 0).")
+    }
     X <- X %*% diag(X.scaling)
-    # center y to have unit norm:
+    # (3) center y to have unit norm
     y.mean <- mean(y)
     y <- y - y.mean
   }
@@ -517,7 +531,7 @@ grpSLOPE <- function(X, y, group, fdr, lambda = "corrected", sigma = NULL,
     ortho <- orthogonalizeGroups(X, group.id)
     # determine sizes of orthogonalized groups:
     ortho.group.length <- rep(NA, n.group)
-    names(ortho.group.length) <- names(group.id)
+    names(ortho.group.length) <- names(ortho)
     for (i in 1:n.group) {
       ortho.group.length[i] <- ncol(ortho[[i]]$Q)
     }
@@ -529,7 +543,7 @@ grpSLOPE <- function(X, y, group, fdr, lambda = "corrected", sigma = NULL,
     block.start <- head(c(1, block.end + 1), n.group)
     for (i in 1:n.group) {
       ind <- block.start[i]:block.end[i]
-      grp[ind] <- names(group.id)[i]
+      grp[ind] <- names(ortho)[i]
       X[ , ind] <- ortho[[i]]$Q
     }
     ortho.group.id <- getGroupID(grp)

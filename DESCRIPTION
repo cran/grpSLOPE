@@ -1,7 +1,7 @@
 Package: grpSLOPE
 Type: Package
 Title: Group Sorted L1 Penalized Estimation
-Version: 0.2.0
+Version: 0.2.1
 Authors@R: c(person("Alexej", "Gossmann", email = "alexej.go@googlemail.com", role = c("aut", "cre")),
     person("Damian", "Brzyski", role = "aut"),
     person("Weijie", "Su", role = "aut"),
@@ -25,7 +25,7 @@ RoxygenNote: 5.0.1.9000
 Suggests: testthat, knitr, rmarkdown, pander
 VignetteBuilder: knitr
 NeedsCompilation: no
-Packaged: 2016-10-20 00:38:40 UTC; alexej
+Packaged: 2016-11-20 07:47:17 UTC; alexej
 Author: Alexej Gossmann [aut, cre],
   Damian Brzyski [aut],
   Weijie Su [aut],
@@ -38,4 +38,4 @@ Author: Alexej Gossmann [aut, cre],
     under GNU GPL-3)
 Maintainer: Alexej Gossmann <alexej.go@googlemail.com>
 Repository: CRAN
-Date/Publication: 2016-10-20 10:52:22
+Date/Publication: 2016-11-20 09:18:04
