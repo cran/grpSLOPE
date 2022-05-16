@@ -12,7 +12,6 @@ fdr <- 0.1
 #--------------------------------------------------------------------------
 context("grpSLOPE(lambda = 'corrected')")
 
-sol.c <- c(0, 0, 17.022493, 4.901825, 0, 0, 0, 0, 0, 0)
 sol.beta <- c(0, 0, 17.570533, 4.932366, 0, 0, 0, 0, 0, 0)
 sol.group.norms <- c(0, 17.71421, 0, 0)
 sol.beta.original.scale <- c(0, 0, 32.492927, 5.776856, 0, 0, 0, 0, 0, 0)
@@ -21,7 +20,6 @@ sol.intercept <- 1.729414
 test_that("when the groups are consecutive blocks", {
   result <- grpSLOPE(X=A, y=y, group=grp, fdr=fdr, lambda="corrected")
   expect_equal(result$beta, sol.beta, tolerance=1e-5)
-  expect_equal(result$c, sol.c, tolerance=1e-5)
   expect_equal(as.numeric(result$group.norms), sol.group.norms, tolerance=1e-5)
   expect_identical(as.numeric(result$selected), c(1))
   expect_identical(result$group, grp)
@@ -317,7 +315,6 @@ test_that("corrected lambdas can't be computed unless groups sizes are small eno
 context("grpSLOPE(lambda = 'mean')")
 
 sol.beta <- c(0, 0, 17.570533, 4.932366, 0, 0, 0, 0, 0, 0)
-sol.c <- c(0, 0, 17.022493, 4.901825, 0, 0, 0, 0, 0, 0)
 sol.group.norms <- c(0, 17.71421, 0, 0)
 sol.beta.original.scale <- c(0, 0, 32.492927, 5.776856, 0, 0, 0, 0, 0, 0)
 sol.intercept <- 1.729414
@@ -325,7 +322,6 @@ sol.intercept <- 1.729414
 test_that("when the groups are consecutive blocks", {
   result <- grpSLOPE(X=A, y=y, group=grp, fdr=fdr, lambda="mean")
   expect_equal(result$beta, sol.beta, tolerance=1e-5)
-  expect_equal(result$c, sol.c, tolerance=1e-5)
   expect_equal(as.numeric(result$group.norms), sol.group.norms, tolerance=1e-5)
   expect_identical(as.numeric(result$selected), c(1))
   expect_identical(result$group, grp)
@@ -467,4 +463,72 @@ test_that("when group submatrix has more columns than rows", {
   expect_is(result$sigma, "numeric")
   expect_null(result$original.scale$beta)
   expect_null(result$original.scale$intercept)
+})
+
+#--------------------------------------------------------------------------
+context("grpSLOPE is equivalent to SLOPE when each group is a singleton")
+
+sol.beta.original.scale <- c(0, 0, 43.006608, 5.986979, 0, 0, 0, 7.515134, 0, 0)
+sol.intercept <- 0.6152246
+
+test_that("with lambda = 'max'", {
+  # compare to results obtained with package SLOPE
+  result.grpSLOPE <- grpSLOPE(X=A, y=y, group=1:10, fdr=fdr, lambda="max", sigma=1)
+  result.SLOPE <- SLOPE::SLOPE(x=A, y=y, family="gaussian", scale="l2", alpha=1/sqrt(nrow(A)), lambda="bh", q=fdr)
+
+  expect_identical(result.grpSLOPE$group, 1:10)
+  expect_true(result.grpSLOPE$optimal)
+  expect_is(result.grpSLOPE$iter, "numeric")
+
+  expect_equal(result.grpSLOPE$lambda, c(result.SLOPE$lambda), tolerance=1e-5)
+  expect_true(result.grpSLOPE$lambda.method == "max")
+  expect_identical(result.grpSLOPE$sigma, 1)
+
+  expect_equal(result.grpSLOPE$original.scale$beta, unname(result.SLOPE$coefficients[2:11,1,1]), tolerance=1e-5)
+  expect_equal(result.grpSLOPE$original.scale$intercept, result.SLOPE$coefficients[,1,1][["(Intercept)"]], tolerance=1e-5)
+
+  expect_equal(result.grpSLOPE$original.scale$beta, sol.beta.original.scale, tolerance=1e-5)
+  expect_equal(result.grpSLOPE$original.scale$intercept, sol.intercept, tolerance=1e-5)
+})
+
+test_that("with lambda = 'max', orthogonalize = FALSE", {
+  # compare to results obtained with package SLOPE
+  result.grpSLOPE <- grpSLOPE(X=A, y=y, group=1:10, fdr=fdr, lambda="max",
+                              orthogonalize=FALSE, sigma=1)
+  result.SLOPE <- SLOPE::SLOPE(x=A, y=y, family="gaussian", scale="l2", alpha=1/sqrt(nrow(A)), lambda="bh", q=fdr)
+
+  expect_identical(result.grpSLOPE$group, 1:10)
+  expect_true(result.grpSLOPE$optimal)
+  expect_is(result.grpSLOPE$iter, "numeric")
+
+  expect_equal(result.grpSLOPE$lambda, c(result.SLOPE$lambda), tolerance=1e-5)
+  expect_true(result.grpSLOPE$lambda.method == "max")
+  expect_identical(result.grpSLOPE$sigma, 1)
+
+  expect_equal(result.grpSLOPE$original.scale$beta, unname(result.SLOPE$coefficients[2:11,1,1]), tolerance=1e-5)
+  expect_equal(result.grpSLOPE$original.scale$intercept, result.SLOPE$coefficients[,1,1][["(Intercept)"]], tolerance=1e-5)
+
+  expect_equal(result.grpSLOPE$original.scale$beta, sol.beta.original.scale, tolerance=1e-5)
+  expect_equal(result.grpSLOPE$original.scale$intercept, sol.intercept, tolerance=1e-5)
+})
+
+test_that("with lambda = 'max', and non-zero intercept", {
+  y <- y - 10
+  # compare to results obtained with package SLOPE
+  result.grpSLOPE <- grpSLOPE(X=A, y=y, group=1:10, fdr=fdr, lambda="max", sigma=1)
+  result.SLOPE <- SLOPE::SLOPE(x=A, y=y, family="gaussian", scale="l2", alpha=1/sqrt(nrow(A)), lambda="bh", q=fdr)
+
+  expect_identical(result.grpSLOPE$group, 1:10)
+  expect_true(result.grpSLOPE$optimal)
+  expect_is(result.grpSLOPE$iter, "numeric")
+
+  expect_equal(result.grpSLOPE$lambda, c(result.SLOPE$lambda), tolerance=1e-5)
+  expect_true(result.grpSLOPE$lambda.method == "max")
+  expect_identical(result.grpSLOPE$sigma, 1)
+
+  expect_equal(result.grpSLOPE$original.scale$beta, unname(result.SLOPE$coefficients[2:11,1,1]), tolerance=1e-5)
+  expect_equal(result.grpSLOPE$original.scale$intercept, result.SLOPE$coefficients[,1,1][["(Intercept)"]], tolerance=1e-5)
+
+  expect_equal(result.grpSLOPE$original.scale$beta, sol.beta.original.scale, tolerance=1e-5)
+  expect_equal(result.grpSLOPE$original.scale$intercept, -9.384775, tolerance=1e-5)
 })

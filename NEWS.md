@@ -1,5 +1,9 @@
 This is a list of API changes.
 
+# grpSLOPE 0.3.1
+
+* Only changes are to the automated software tests.
+
 # grpSLOPE 0.3.0
 
 * Removes the dependency on the R package `SLOPE`, because the only two functions from `SLOPE` that are used in `grpSLOPE` are being deprecated and removed from `SLOPE` package versions newer than 0.1.3.
