@@ -1,4 +1,16 @@
-This is a list of API changes.
+# grpSLOPE (development version)
+
+This is a list of software changes.
+
+# grpSLOPE 0.3.3
+
+* No API changes
+* Very minor changes based on feedback from CRAN review.
+
+# grpSLOPE 0.3.2
+
+* No API changes
+* Only changes are to the automated software tests to accommodate minor floating point arithmetic differences on M1mac
 
 # grpSLOPE 0.3.1
 
