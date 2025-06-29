@@ -7,7 +7,7 @@ probs <- t(probs) %x% matrix(1,p,2)
 X0    <- matrix(rbinom(2*p*p, 1, probs), p, 2*p)
 X     <- X0 %*% (diag(p) %x% matrix(1,2,1))
 
-## ---- results = "asis", echo = FALSE------------------------------------------
+## ----results = "asis", echo = FALSE-------------------------------------------
 pander::pandoc.table(X[1:10, 1:10])
 
 ## -----------------------------------------------------------------------------
@@ -32,7 +32,7 @@ group.names <- names(group.id)
 ## -----------------------------------------------------------------------------
 ind.relevant <- sort(sample(1:n.group, 10)) # indices of relevant groups
 
-## ---- results = "asis", echo = FALSE------------------------------------------
+## ----results = "asis", echo = FALSE-------------------------------------------
 pander::pandoc.table(group.names[ind.relevant])
 
 ## -----------------------------------------------------------------------------
@@ -70,7 +70,7 @@ b[1:13]
 ## -----------------------------------------------------------------------------
 plot(model$lambda[1:10], xlab = "Index", ylab = "Lambda", type="l")
 
-## ---- results = "asis"--------------------------------------------------------
+## ----results = "asis"---------------------------------------------------------
 true.relevant <- group.names[ind.relevant]
 truepos       <- intersect(model$selected, true.relevant)
 
